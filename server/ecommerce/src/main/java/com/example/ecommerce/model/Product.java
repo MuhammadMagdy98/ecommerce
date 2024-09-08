@@ -6,28 +6,30 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
+
+
+
 import java.time.Instant;
 
 @Data
 @Table("products")
 public class Product {
     @Id
+    private int productId;
 
-    int id;
+    private String name;
 
-    String name;
+    private String description;
 
-    String description;
+    private int quantity;
 
-    int quantity;
+    private double price;
 
-    double price;
+    private int categoryId;
 
-    int categoryId;
+    private int brandId;
 
-    int brandId;
+    private Instant createdAt;
 
-    Instant createdAt;
-
-    Instant updatedAt;
+    private Instant updatedAt;
 }

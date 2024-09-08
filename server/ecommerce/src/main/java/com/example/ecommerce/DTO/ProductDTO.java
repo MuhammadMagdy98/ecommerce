@@ -8,7 +8,6 @@ import java.time.Instant;
 @Data
 @ToString
 public class ProductDTO {
-    private int id;
 
     private String name;
 
