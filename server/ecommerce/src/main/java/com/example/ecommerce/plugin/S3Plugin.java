@@ -9,6 +9,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.regions.Regions;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
@@ -16,14 +17,20 @@ import java.io.IOException;
 @Component
 @Slf4j
 public class S3Plugin {
+    @Value("${aws.accessKeyId}")
+    private String accessKeyId;
 
+    @Value("${aws.secretKey}")
+    private String secretKey;
+
+    @Value("${aws.bucketName}")
+    private String bucketName;
     public void uploadObject(MultipartFile file) {
-        BasicAWSCredentials awsCreds = new BasicAWSCredentials("", "");
+        BasicAWSCredentials awsCreds = new BasicAWSCredentials(accessKeyId, secretKey);
         final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
                 .withRegion(Regions.EU_NORTH_1)
                 .withCredentials(new AWSStaticCredentialsProvider(awsCreds))
                 .build();
-        final String bucketName = "ecommerce-magdy";
 
         try {
             // Prepare metadata for the file
