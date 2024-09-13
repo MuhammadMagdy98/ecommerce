@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.util.UUID;
 
 @Component
 @Slf4j
@@ -39,14 +40,46 @@ public class S3Plugin {
             metadata.setContentType(file.getContentType());
 
             // Upload the file
-            s3.putObject(bucketName, file.getOriginalFilename(), file.getInputStream(), metadata);
-            log.debug("File uploaded successfully to S3 bucket: " + bucketName);
+
+            s3.putObject(bucketName, getUniqueNameForS3(file.getOriginalFilename()), file.getInputStream(), metadata);
+            log.debug("File uploaded successfully to S3 bucket: {}", bucketName);
 
         } catch (AmazonServiceException e) {
-            log.error("Amazon S3 couldn't process the request: " + e.getErrorMessage());
+            log.error("Amazon S3 couldn't process the request: {}", e.getErrorMessage());
         } catch (IOException e) {
-            log.error("IOException: Unable to upload file to S3: " + e.getMessage());
+            log.error("IOException: Unable to upload file to S3: {}", e.getMessage());
         }
+    }
+
+    private String getUniqueNameForS3(String fileName) {
+        String uniqueId = UUID.randomUUID().toString();
+        String fileExtension = "";
+        if (fileName != null && fileName.contains(".")) {
+            fileExtension = fileName.substring(fileName.lastIndexOf("."));
+        }
+
+        return uniqueId + fileExtension;
+    }
+
+    private boolean isImage(MultipartFile file) {
+        // Check MIME type
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            return false;
+        }
+
+        // Check extension
+        String originalFileName = file.getOriginalFilename();
+        if (originalFileName != null) {
+            String lowerCaseFileName = originalFileName.toLowerCase();
+            return lowerCaseFileName.endsWith(".jpg") ||
+                    lowerCaseFileName.endsWith(".jpeg") ||
+                    lowerCaseFileName.endsWith(".png") ||
+                    lowerCaseFileName.endsWith(".gif") ||
+                    lowerCaseFileName.endsWith(".bmp");
+        }
+
+        return false;
     }
 }
 

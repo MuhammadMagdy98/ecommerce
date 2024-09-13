@@ -1,5 +1,5 @@
 -- Create Users Table
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
                        user_id SERIAL PRIMARY KEY,
                        username VARCHAR(255) NOT NULL UNIQUE,
                        email VARCHAR(255) NOT NULL UNIQUE,
@@ -14,7 +14,7 @@ CREATE TABLE users (
 );
 
 -- Create Categories Table
-CREATE TABLE categories (
+CREATE TABLE IF NOT EXISTS categories (
                             category_id SERIAL PRIMARY KEY,
                             name VARCHAR(255) NOT NULL,
                             description TEXT,
@@ -23,7 +23,7 @@ CREATE TABLE categories (
 );
 
 -- Create Products Table
-CREATE TABLE products (
+CREATE TABLE IF NOT EXISTS products (
                           product_id SERIAL PRIMARY KEY,
                           name VARCHAR(255) NOT NULL,
                           description TEXT,
@@ -35,21 +35,37 @@ CREATE TABLE products (
                           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create Orders Table
-CREATE TABLE orders (
+-- Create Orders Table with deferrable constraint
+CREATE TABLE IF NOT EXISTS orders (
                         order_id SERIAL PRIMARY KEY,
-                        user_id INT REFERENCES users(user_id),
+                        user_id INT,
                         order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         total_amount DECIMAL(10,2) NOT NULL,
                         status VARCHAR(50),
                         shipping_address TEXT,
-                        payment_id INT REFERENCES payments(payment_id),
+                        payment_id INT,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
 );
 
+-- Create Payments Table with deferrable constraint
+CREATE TABLE IF NOT EXISTS payments (
+                          payment_id SERIAL PRIMARY KEY,
+                          order_id INT,
+                          payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                          amount DECIMAL(10,2) NOT NULL,
+                          payment_method VARCHAR(50),
+                          status VARCHAR(50),
+                          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+);
+
+
+
 -- Create Order Items Table
-CREATE TABLE order_items (
+CREATE TABLE IF NOT EXISTS order_items (
                              order_item_id SERIAL PRIMARY KEY,
                              order_id INT REFERENCES orders(order_id),
                              product_id INT REFERENCES products(product_id),
@@ -59,20 +75,10 @@ CREATE TABLE order_items (
                              updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create Payments Table
-CREATE TABLE payments (
-                          payment_id SERIAL PRIMARY KEY,
-                          order_id INT REFERENCES orders(order_id),
-                          payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                          amount DECIMAL(10,2) NOT NULL,
-                          payment_method VARCHAR(50),
-                          status VARCHAR(50),
-                          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+
 
 -- Create Reviews Table
-CREATE TABLE reviews (
+CREATE TABLE IF NOT EXISTS reviews (
                          review_id SERIAL PRIMARY KEY,
                          user_id INT REFERENCES users(user_id),
                          product_id INT REFERENCES products(product_id),
@@ -83,7 +89,7 @@ CREATE TABLE reviews (
 );
 
 -- Create Cart Table
-CREATE TABLE cart (
+CREATE TABLE IF NOT EXISTS cart (
                       cart_id SERIAL PRIMARY KEY,
                       user_id INT REFERENCES users(user_id),
                       product_id INT REFERENCES products(product_id),
@@ -93,7 +99,7 @@ CREATE TABLE cart (
 );
 
 -- Create Wishlist Table
-CREATE TABLE wishlist (
+CREATE TABLE IF NOT EXISTS wishlist (
                           wishlist_id SERIAL PRIMARY KEY,
                           user_id INT REFERENCES users(user_id),
                           product_id INT REFERENCES products(product_id),
@@ -102,7 +108,7 @@ CREATE TABLE wishlist (
 );
 
 -- Create Addresses Table
-CREATE TABLE addresses (
+CREATE TABLE IF NOT EXISTS addresses (
                            address_id SERIAL PRIMARY KEY,
                            user_id INT REFERENCES users(user_id),
                            address TEXT NOT NULL,
@@ -113,3 +119,13 @@ CREATE TABLE addresses (
                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Add foreign key constraint to Orders Table
+ALTER TABLE orders
+    ADD CONSTRAINT fk_orders_payments
+        FOREIGN KEY (payment_id) REFERENCES payments(payment_id) DEFERRABLE INITIALLY DEFERRED;
+
+-- Add foreign key constraint to Payments Table
+ALTER TABLE payments
+    ADD CONSTRAINT fk_payments_orders
+        FOREIGN KEY (order_id) REFERENCES orders(order_id) DEFERRABLE INITIALLY DEFERRED;

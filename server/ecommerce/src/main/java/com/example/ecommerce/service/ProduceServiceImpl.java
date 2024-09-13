@@ -4,6 +4,7 @@ import com.example.ecommerce.DTO.ProductDTO;
 import com.example.ecommerce.model.Product;
 import com.example.ecommerce.plugin.S3Plugin;
 import com.example.ecommerce.repository.ProductRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
@@ -11,6 +12,7 @@ import reactor.core.publisher.Mono;
 import java.time.Instant;
 
 @Service
+@Slf4j
 public class ProduceServiceImpl implements ProduceService {
 
 
@@ -28,7 +30,7 @@ public class ProduceServiceImpl implements ProduceService {
         Product product = new Product();
 
 
-        System.out.println("file is " + file);
+
         product.setName(productDTO.getName());
         product.setPrice(productDTO.getPrice());
 
