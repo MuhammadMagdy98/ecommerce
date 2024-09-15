@@ -120,12 +120,23 @@ CREATE TABLE IF NOT EXISTS addresses (
                            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Add foreign key constraint to Orders Table
-ALTER TABLE orders
-    ADD CONSTRAINT fk_orders_payments
-        FOREIGN KEY (payment_id) REFERENCES payments(payment_id) DEFERRABLE INITIALLY DEFERRED;
+-- -- Add foreign key constraint to Orders Table
+-- ALTER TABLE orders
+--     ADD CONSTRAINT fk_orders_payments
+--         FOREIGN KEY (payment_id) REFERENCES payments(payment_id) DEFERRABLE INITIALLY DEFERRED;
+--
+-- -- Add foreign key constraint to Payments Table
+-- ALTER TABLE payments
+--     ADD CONSTRAINT fk_payments_orders
+--         FOREIGN KEY (order_id) REFERENCES orders(order_id) DEFERRABLE INITIALLY DEFERRED;
 
--- Add foreign key constraint to Payments Table
-ALTER TABLE payments
-    ADD CONSTRAINT fk_payments_orders
-        FOREIGN KEY (order_id) REFERENCES orders(order_id) DEFERRABLE INITIALLY DEFERRED;
+CREATE TABLE IF NOT EXISTS product_images (
+                                image_id SERIAL PRIMARY KEY,
+                                product_id INT REFERENCES products(product_id) ON DELETE CASCADE,
+                                image_url TEXT NOT NULL,
+                                alt_text TEXT,
+                                image_order INT
+);
+
+
+
