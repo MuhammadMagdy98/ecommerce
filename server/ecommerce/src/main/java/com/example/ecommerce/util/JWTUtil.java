@@ -1,5 +1,6 @@
 package com.example.ecommerce.util;
 
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -7,6 +8,8 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.util.Base64;
 import java.util.function.Function;
 
@@ -35,15 +38,15 @@ public class JWTUtil {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
-    SecretKey toSecretKey(String key) {
-        byte[] decodedKey = Base64.getDecoder().decode(jwtSecret);
-        return new SecretKeySpec(decodedKey, 0, decodedKey.length, "AES");
+    public Key toSecretKey(String secret) {
+        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)); // Uses HMAC-SHA algorithm for signing
     }
     private Claims extractAllClaims(String token) {
-
-        // rebuild key using SecretKeySpec
-
-        return Jwts.parser().verifyWith(toSecretKey(jwtSecret)).build().parseSignedClaims(token).getPayload();
+        return Jwts.parser()
+                .setSigningKey(toSecretKey(jwtSecret))  // Verify the token with the secret key
+                .build()
+                .parseClaimsJws(token)                  // Parses the token and extracts claims
+                .getBody();                             // Retrieves the Claims (payload)
     }
 
     private Boolean isTokenExpired(String token) {
