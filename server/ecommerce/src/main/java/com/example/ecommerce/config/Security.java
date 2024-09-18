@@ -45,7 +45,7 @@ public class Security {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable) // Disable CSRF for stateless JWT-based authentication
                 .authorizeExchange(exchanges -> exchanges
-                                .pathMatchers(Url.LOGIN, Url.REGISTER, Url.PRODUCT).permitAll() // Allow public access to these routes
+                                .pathMatchers(Url.LOGIN, Url.REGISTER).permitAll() // Allow public access to these routes
                         .anyExchange().authenticated() // All other routes require authentication
                 )
                 .addFilterBefore(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)

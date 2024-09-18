@@ -45,9 +45,11 @@ public class GlobalException implements WebExceptionHandler {
 
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
-        System.out.println("in the handler");
         if (ex instanceof SignatureException) {
             return buildErrorResponse(exchange, HttpStatus.UNAUTHORIZED, "Invalid or expired token. Please log in again.");
+        }
+        if (ex instanceof EcommerceException) {
+            return buildErrorResponse(exchange, HttpStatus.BAD_REQUEST, ex.getMessage());
         }
 
         return buildErrorResponse(exchange, HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred.");

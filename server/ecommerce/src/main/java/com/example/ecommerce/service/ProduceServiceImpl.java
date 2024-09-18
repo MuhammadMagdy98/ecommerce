@@ -29,7 +29,7 @@ public class ProduceServiceImpl implements ProduceService {
     public Mono<Void> addProduct(ProductDTO productDTO, MultipartFile file) {
         Product product = new Product();
 
-
+        System.out.println("adding product v2");
 
         product.setName(productDTO.getName());
         product.setPrice(productDTO.getPrice());

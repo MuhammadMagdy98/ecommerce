@@ -4,6 +4,8 @@ import com.example.ecommerce.DTO.LoginResponseDTO;
 import com.example.ecommerce.DTO.RegisterResponseDTO;
 import com.example.ecommerce.DTO.UserLoginDTO;
 import com.example.ecommerce.DTO.UserRegisterDTO;
+import com.example.ecommerce.exception.EcommerceError;
+import com.example.ecommerce.exception.EcommerceException;
 import com.example.ecommerce.model.User;
 import com.example.ecommerce.repository.UserRepository;
 import com.example.ecommerce.util.JWTUtil;
@@ -30,7 +32,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(userDTO.getEmail())
                 .flatMap(existingUser -> {
                     // User already exists, return an error with a specific type
-                    return Mono.error(new RuntimeException("Email already in use"));
+                    return Mono.error(new EcommerceException(EcommerceError.USER_ALREADY_EXIST));
                 })
                 .switchIfEmpty(Mono.defer(() -> {
                     // Create and save the new user
@@ -38,14 +40,12 @@ public class UserServiceImpl implements UserService {
                     newUser.setEmail(userDTO.getEmail());
                     newUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
                     // Encode password
-                    System.out.println("setting the username");
                     newUser.setUsername(userDTO.getUsername());
 
                     return userRepository.save(newUser)
                             .map(savedUser -> {
                                 // Generate JWT token
                                 String token = jwtUtil.generateToken(savedUser.getEmail());
-                                System.out.println("token is " + token);
                                 // Create response DTO
                                 RegisterResponseDTO response = new RegisterResponseDTO();
                                 response.setToken(token);
@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
                  response.setToken(token);
                  return Mono.just(response);
              } else {
-                 return Mono.error(new RuntimeException("Email or password is not correct"));
+                 return Mono.error(new EcommerceException(EcommerceError.INVALID_CREDENTIALS));
              }
         });
     }

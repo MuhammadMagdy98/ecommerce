@@ -26,7 +26,7 @@ public class ProductController {
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void addProduct(@RequestPart("product") String productJson, @RequestPart("file") MultipartFile file) {
 
-
+        System.out.println("adding product");
         // Convert product JSON string to ProductDTO object using ObjectMapper
         ObjectMapper objectMapper = new ObjectMapper();
         ProductDTO productDTO = null;
