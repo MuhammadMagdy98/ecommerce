@@ -12,6 +12,7 @@ import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.support.WebExchangeBindException;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebExceptionHandler;
 import reactor.core.publisher.Mono;
@@ -19,6 +20,7 @@ import reactor.core.publisher.Mono;
 import io.jsonwebtoken.security.SignatureException;
 
 import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 @Order(-2)
@@ -51,6 +53,17 @@ public class GlobalException implements WebExceptionHandler {
         if (ex instanceof EcommerceException) {
             return buildErrorResponse(exchange, HttpStatus.BAD_REQUEST, ex.getMessage());
         }
+        if (ex instanceof WebExchangeBindException) {
+            // Extract validation error messages from the exception
+            WebExchangeBindException bindException = (WebExchangeBindException) ex;
+
+            String errorMessages = bindException.getFieldErrors().stream()
+                    .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage()) // e.g., "email: Invalid email format"
+                    .collect(Collectors.joining(", ")); // Combine multiple errors into a single string
+
+            return buildErrorResponse(exchange, HttpStatus.BAD_REQUEST, errorMessages);
+        }
+        System.out.println(ex.toString());
 
         return buildErrorResponse(exchange, HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred.");
 

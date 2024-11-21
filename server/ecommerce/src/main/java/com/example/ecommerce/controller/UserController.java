@@ -10,7 +10,6 @@ import com.example.ecommerce.constant.Url;
 import com.example.ecommerce.service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,7 +36,7 @@ public class UserController {
 
     @PostMapping("/login")
     public Mono<ResponseDTO<LoginResponseDTO>> login(@Valid @RequestBody UserLoginDTO user) {
-
+        System.out.println("hello");
         return userService.loginUser(user).map(data -> new ResponseDTO<>(data, HttpStatus.OK.value(), null));
     }
 }
