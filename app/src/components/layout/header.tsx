@@ -10,7 +10,7 @@ export function Navbar() {
         {/* Left: Logo */}
         <div className="flex items-center">
           <a href="/" className="text-2xl font-bold text-gray-800">
-            LOGO
+            MoCommerce
           </a>
         </div>
 
