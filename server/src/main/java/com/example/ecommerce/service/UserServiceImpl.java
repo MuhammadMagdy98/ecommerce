@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
                     newUser.setEmail(userDTO.getEmail());
                     newUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
                     // Encode password
-                    newUser.setUsername(userDTO.getUsername());
+                    newUser.setUsername(userDTO.getName());
 
                     return userRepository.save(newUser)
                             .map(savedUser -> {
