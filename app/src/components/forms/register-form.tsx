@@ -29,6 +29,7 @@ function Register() {
           headers: {
             "Content-Type": "application/json",
           },
+          withCredentials: true,
         }
       );
       return response.data;
@@ -52,8 +53,6 @@ function Register() {
     registerUser(data);
   };
 
-  
-
   return (
     <div className="flex m-10">
       <img
@@ -61,7 +60,10 @@ function Register() {
         className="h-[781px] w-[805px]"
         alt="landing image"
       />
-      <form onSubmit={handleSubmit(onSubmit)} className="w-[400px] h-[530px] mx-auto p-6 rounded-lg bg-white my-8">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="w-[400px] h-[530px] mx-auto p-6 rounded-lg bg-white my-8"
+      >
         <div className="w-[400px] h-[530px] mx-auto p-6 rounded-lg bg-white my-8">
           <h1 className="text-4xl font-bold mb-4">Create an account</h1>
           <p className="text-gray-600 mb-6">Enter your details below</p>
