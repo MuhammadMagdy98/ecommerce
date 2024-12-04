@@ -6,6 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom"; // Import Link and useNavigate
+import { api, ENDPOINTS } from "@/constants/Url";
 
 interface RegisterForm {
   name: string;
@@ -23,16 +24,7 @@ function Register() {
 
   const { mutate: registerUser, isLoading } = useMutation({
     mutationFn: async (userData) => {
-      const response = await axios.post(
-        "http://localhost:8080/api/v1/user/register",
-        userData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
+      const response = await api.post(ENDPOINTS.AUTH.LOGIN, userData);
       return response.data;
     },
     onSuccess: (data) => {

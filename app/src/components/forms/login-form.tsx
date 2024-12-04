@@ -6,6 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { api, ENDPOINTS } from "@/constants/Url";
 
 interface LoginForm {
   email: string;
@@ -23,16 +24,7 @@ function Login() {
 
   const { mutate: loginUser, isLoading } = useMutation({
     mutationFn: async (userData) => {
-      const response = await axios.post(
-        "http://localhost:8080/api/v1/user/login",
-        userData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
+      const response = await api.post(ENDPOINTS.AUTH.REGISTER, userData);
       return response.data;
     },
     onSuccess: (data) => {

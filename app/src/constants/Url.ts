@@ -1,6 +1,16 @@
 import { env } from "@/config/env";
+import axios from "axios";
 
 const BASE_URL = env.API_URL;
+
+// Create axios instance with default config
+export const api = axios.create({
+  baseURL: BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+  withCredentials: true,
+});
 
 export const ENDPOINTS = {
   AUTH: {
@@ -13,5 +23,4 @@ export const ENDPOINTS = {
     PROFILE: "/user/profile",
     UPDATE_PROFILE: "/user/profile/update",
   },
-  // Add other endpoints without the base URL
 } as const;
