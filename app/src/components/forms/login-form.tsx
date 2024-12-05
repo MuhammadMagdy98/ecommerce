@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import LandingImage from "../../assets/landing-image.png";
+import LandingImage from "@/assets/landing-image.png";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { api, ENDPOINTS } from "@/constants/Url";
+import GoogleButton from "../layout/google-button";
 
 interface LoginForm {
   email: string;
@@ -23,7 +23,7 @@ function Login() {
   } = useForm<LoginForm>();
 
   const { mutate: loginUser, isLoading } = useMutation({
-    mutationFn: async (userData) => {
+    mutationFn: async (userData: LoginForm) => {
       const response = await api.post(ENDPOINTS.AUTH.REGISTER, userData);
       return response.data;
     },
@@ -122,6 +122,7 @@ function Login() {
               >
                 {isLoading ? "Signing in..." : "Sign in"}
               </Button>
+              <GoogleButton />
 
               {/* Sign up link */}
               <p className="text-center text-sm text-gray-600">

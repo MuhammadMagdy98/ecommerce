@@ -41,13 +41,12 @@ public class UserController {
 
         return userService.registerUser(user)
                 .map(data -> {
-                    // Create a cookie for the token
                     ResponseCookie tokenCookie = ResponseCookie.from("token", data.getToken())
-                            .httpOnly(true)  // Set HttpOnly flag for security
+                            .httpOnly(true)
                             .secure(false)
-                            .sameSite("None")// Set Secure flag (use only with HTTPS)
-                            .path("/")       // Set the path where the cookie is valid
-                            .maxAge(Duration.ofDays(7))  // Set the cookie expiry time
+                            .sameSite("None")
+                            .path("/")
+                            .maxAge(Duration.ofDays(7))
                             .build();
 
                     // Add the cookie to the response
