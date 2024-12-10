@@ -1,17 +1,19 @@
 import React, { useState } from "react";
-import { Input } from "../ui/input";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <nav className="bg-gray-100 border-b border-gray-300">
-      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+    <nav className="bg-white border-b border-gray-300">
+      <div className="container mx-auto py-3 flex items-center justify-between">
         {/* Left: Logo */}
-        <div className="flex items-center">
-          <a href="/" className="text-2xl font-bold text-gray-800">
+        <div className="flex items-start">
+          <Link to="/" className="text-2xl font-bold text-gray-800">
             MoCommerce
-          </a>
+          </Link>
         </div>
 
         {/* Middle: Hamburger Icon (Mobile) */}
@@ -39,40 +41,45 @@ export function Navbar() {
 
         {/* Middle: Links (Desktop) */}
         <div className="hidden md:flex space-x-8">
-          <a href="/" className="text-gray-600 hover:text-gray-800">
+          <Link to="/home" className="text-gray-600 hover:text-gray-800">
             Home
-          </a>
-          <a href="/contact" className="text-gray-600 hover:text-gray-800">
+          </Link>
+          <Link to="/contact" className="text-gray-600 hover:text-gray-800">
             Contact
-          </a>
-          <a href="/about" className="text-gray-600 hover:text-gray-800">
+          </Link>
+          <Link to="/about" className="text-gray-600 hover:text-gray-800">
             About
-          </a>
+          </Link>
         </div>
 
         {/* Right: Search Input */}
         <div className="hidden md:flex items-center space-x-4">
-          <Input
-            type="text"
-            placeholder="What are you looking for?"
-            className="w-64"
-          />
+          <div className="relative w-64">
+            <Input
+              type="text"
+              placeholder="What are you looking for?"
+              className="w-full pr-10"
+            />
+            <div className="absolute inset-y-0 right-3 flex items-center">
+              <Search className="h-5 w-5 text-gray-500" />
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-gray-100 border-t border-gray-300">
+        <div className="md:hidden bg-white border-t border-gray-300">
           <div className="flex flex-col items-start p-4 space-y-4">
-            <a href="/" className="text-gray-600 hover:text-gray-800">
+            <Link to="/home" className="text-gray-600 hover:text-gray-800">
               Home
-            </a>
-            <a href="/contact" className="text-gray-600 hover:text-gray-800">
+            </Link>
+            <Link to="/contact" className="text-gray-600 hover:text-gray-800">
               Contact
-            </a>
-            <a href="/about" className="text-gray-600 hover:text-gray-800">
+            </Link>
+            <Link to="/about" className="text-gray-600 hover:text-gray-800">
               About
-            </a>
+            </Link>
             <Input
               type="text"
               placeholder="What are you looking for?"

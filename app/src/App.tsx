@@ -4,6 +4,7 @@ import Register from "./components/forms/register-form";
 import Login from "./components/forms/login-form";
 import Footer from "./components/layout/footer";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             {/* Add more routes as needed */}
             {/* You can add a home page route */}
             <Route path="/" element={<Register />} />{" "}
+            <Route path="/home" element={<Home />} />{" "}
             {/* or whatever component you want for the home page */}
           </Routes>
         </main>
