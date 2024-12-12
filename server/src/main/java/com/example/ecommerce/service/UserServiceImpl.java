@@ -2,6 +2,7 @@ package com.example.ecommerce.service;
 
 import com.example.ecommerce.DTO.LoginResponseDTO;
 import com.example.ecommerce.DTO.RegisterResponseDTO;
+import com.example.ecommerce.DTO.UserDetailsDTO;
 import com.example.ecommerce.DTO.UserLoginDTO;
 import com.example.ecommerce.DTO.UserRegisterDTO;
 import com.example.ecommerce.exception.EcommerceError;
@@ -70,6 +71,29 @@ public class UserServiceImpl implements UserService {
                  return Mono.error(new EcommerceException(EcommerceError.INVALID_CREDENTIALS));
              }
         });
+    }
+    @Override
+    public Mono<UserDetailsDTO> getUserDetails(String token) {
+        String username = jwtUtil.extractUsername(token);
+        if (username == null) {
+            return Mono.error(new EcommerceException(EcommerceError.UNAUTHORIZED));
+        }
+        return userRepository.findByEmail(username)
+                .switchIfEmpty(Mono.error(new EcommerceException(EcommerceError.NOT_FOUND)))
+                .map(user -> {
+                    // Transform the user entity to UserDetailsDTO
+                    return UserDetailsDTO.builder()
+                            .userId(user.getUserId())
+                            .username(user.getUsername())
+                            .email(user.getEmail())
+                            .firstName(user.getFirstName())
+                            .lastName(user.getLastName())
+                            .phoneNumber(user.getPhoneNumber())
+                            .address(user.getAddress())
+                            .role(user.getRole())
+                            .build();
+                });
+
     }
 
 }

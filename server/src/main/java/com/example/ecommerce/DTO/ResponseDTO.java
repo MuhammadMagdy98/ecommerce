@@ -20,6 +20,8 @@ public class ResponseDTO<T> {
     private int status;
 
     private String message;
-
+    public static <T> ResponseDTO<T> of(T data, int statusCode, String errorMessage) {
+        return new ResponseDTO<>(data, statusCode, errorMessage);
+    }
 
 }

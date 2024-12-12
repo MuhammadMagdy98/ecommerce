@@ -6,6 +6,7 @@ public class Url {
     public static final String USER = BASE_URL + "/user";
     public static final String LOGIN = USER + "/login";
     public static final String REGISTER = USER + "/register";
+    public static final String ME = USER + "/me";
     public static final String PRODUCT = BASE_URL + "/product";
 
 
