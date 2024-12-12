@@ -1,12 +1,16 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import LandingImage from "@/assets/landing-image.png";
-import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { api, ENDPOINTS } from "@/constants/Url";
-import GoogleButton from "../layout/google-button";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import LandingImage from '@/assets/landing-image.png';
+import { useForm } from 'react-hook-form';
+import { useMutation } from '@tanstack/react-query';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { api, ENDPOINTS } from '@/constants/Url';
+import GoogleButton from '../layout/google-button';
+import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '@/store';
+import { login } from '@/slices/user-slices';
 
 interface LoginForm {
   email: string;
@@ -14,7 +18,8 @@ interface LoginForm {
 }
 
 function Login() {
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -22,26 +27,43 @@ function Login() {
     formState: { errors },
   } = useForm<LoginForm>();
 
+  const navigate = useNavigate();
+
   const { mutate: loginUser, isLoading } = useMutation({
     mutationFn: async (userData: LoginForm) => {
-      const response = await api.post(ENDPOINTS.AUTH.REGISTER, userData);
+      const response = await api.post(ENDPOINTS.AUTH.LOGIN, userData);
       return response.data;
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       // Handle successful login
-      console.log("Login successful:", data);
+      console.log('Login successful:', data);
       // Redirect to dashboard or home page
+      navigate('/home');
+      await fetchUserDetails();
     },
     onError: (error) => {
       // Handle login error
       setError(
         error.response?.data?.message ||
-          "Login failed. Please check your credentials."
+          'Login failed. Please check your credentials.'
       );
-      console.error("Login error:", error);
+      console.error('Login error:', error);
     },
   });
 
+  const fetchUserDetails = async () => {
+    try {
+      const response = await api.get(ENDPOINTS.AUTH.ME, {
+        withCredentials: true, // Ensures cookies are sent with the request
+      });
+
+      // Store user details in Redux
+      dispatch(login(response.data));
+      console.log('User details fetched:', response.data);
+    } catch (error) {
+      console.error('Failed to fetch user details:', error);
+    }
+  };
   const onSubmit = (data: LoginForm) => {
     loginUser(data);
   };
@@ -74,11 +96,11 @@ function Login() {
                 <Input
                   placeholder="Email"
                   type="email"
-                  {...register("email", {
-                    required: "Email is required",
+                  {...register('email', {
+                    required: 'Email is required',
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "Invalid email address",
+                      message: 'Invalid email address',
                     },
                   })}
                 />
@@ -93,8 +115,8 @@ function Login() {
                 <Input
                   placeholder="Password"
                   type="password"
-                  {...register("password", {
-                    required: "Password is required",
+                  {...register('password', {
+                    required: 'Password is required',
                   })}
                 />
                 {errors.password && (
@@ -120,13 +142,13 @@ function Login() {
                 className="w-full primary"
                 disabled={isLoading}
               >
-                {isLoading ? "Signing in..." : "Sign in"}
+                {isLoading ? 'Signing in...' : 'Sign in'}
               </Button>
               <GoogleButton />
 
               {/* Sign up link */}
               <p className="text-center text-sm text-gray-600">
-                Don't have an account?{" "}
+                Don't have an account?{' '}
                 <Link
                   to="/register"
                   className="text-blue-600 hover:text-blue-800"

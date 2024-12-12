@@ -1,10 +1,19 @@
-import React, { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { Search, ShoppingCart, Heart, UserRound } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const { isAuthenticated, userDetails } = useSelector(
+    (state: RootState) => state.userDetails
+  );
+
+
+  console.log("is authenticated", isAuthenticated, "user details", userDetails);
 
   return (
     <nav className="bg-white border-b border-gray-300">
@@ -52,8 +61,9 @@ export function Navbar() {
           </Link>
         </div>
 
-        {/* Right: Search Input */}
-        <div className="hidden md:flex items-center space-x-4">
+        {/* Right: Search Input and Icons */}
+        <div className="hidden md:flex items-center space-x-6">
+          {/* Search Input */}
           <div className="relative w-64">
             <Input
               type="text"
@@ -63,6 +73,17 @@ export function Navbar() {
             <div className="absolute inset-y-0 right-3 flex items-center">
               <Search className="h-5 w-5 text-gray-500" />
             </div>
+          </div>
+          {/* Cart Icon */}
+          <Link to="/cart" className="text-gray-600 hover:text-gray-800">
+            <ShoppingCart className="h-6 w-6" />
+          </Link>
+          {/* Wishlist Icon */}
+          <Link to="/wishlist" className="text-gray-600 hover:text-gray-800">
+            <Heart className="h-6 w-6" />
+          </Link>
+          <div className="text-gray-600 hover:text-gray-800">
+            <UserRound className="h-6 w-6" />
           </div>
         </div>
       </div>
@@ -80,11 +101,27 @@ export function Navbar() {
             <Link to="/about" className="text-gray-600 hover:text-gray-800">
               About
             </Link>
+            {/* Search Input */}
             <Input
               type="text"
               placeholder="What are you looking for?"
               className="w-full"
             />
+            {/* Cart and Wishlist Icons */}
+            <div className="flex items-center space-x-6 mt-2">
+              <Link to="/cart" className="text-gray-600 hover:text-gray-800">
+                <ShoppingCart className="h-6 w-6" />
+              </Link>
+              <Link
+                to="/wishlist"
+                className="text-gray-600 hover:text-gray-800"
+              >
+                <Heart className="h-6 w-6" />
+              </Link>
+              <Link to="" className="text-gray-600 hover:text-gray-800">
+                <UserRound className="h-6 w-6" />
+              </Link>
+            </div>
           </div>
         </div>
       )}
