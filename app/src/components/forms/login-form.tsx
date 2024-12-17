@@ -31,15 +31,18 @@ function Login() {
 
   const { mutate: loginUser, isLoading } = useMutation({
     mutationFn: async (userData: LoginForm) => {
-      const response = await api.post(ENDPOINTS.AUTH.LOGIN, userData);
+      const response = await api.post(ENDPOINTS.AUTH.LOGIN, userData, {
+        withCredentials: true,
+      });
       return response.data;
     },
     onSuccess: async (data) => {
       // Handle successful login
       console.log('Login successful:', data);
-      // Redirect to dashboard or home page
-      navigate('/home');
-      await fetchUserDetails();
+      setTimeout(async () => {
+        await fetchUserDetails();
+        navigate('/home'); // Navigate to the home page
+      }, 500); // 500ms delay
     },
     onError: (error) => {
       // Handle login error

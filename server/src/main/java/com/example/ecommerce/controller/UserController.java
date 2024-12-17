@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -75,8 +76,10 @@ public class UserController {
     @GetMapping("/me")
     public Mono<ResponseDTO<UserDetailsDTO>> getAuthenticatedUser(ServerHttpResponse response,
                                                                   @RequestHeader HttpHeaders headers,
+                                                                  ServerHttpRequest request,
                                                                   @CookieValue(name = "token", required = false) String token) {
         log.info("Incoming request headers: {}", headers);
+        log.info("cookies are ", request.getCookies());
         if (token == null || token.isEmpty()) {
             log.warn("No token provided in cookies");
             return Mono.error(new EcommerceException(EcommerceError.UNAUTHORIZED));
@@ -86,7 +89,6 @@ public class UserController {
                 .map(userDetails -> ResponseDTO.of(userDetails, HttpStatus.OK.value(), null));
 
     }
-
 
 
 }

@@ -60,18 +60,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public Mono<LoginResponseDTO> loginUser(UserLoginDTO userDTO) {
         return userRepository.findByEmail(userDTO.getEmail()).flatMap(existingUser -> {
-             String hashedPassword = existingUser.getPassword();
-             if (passwordEncoder.matches(userDTO.getPassword(), hashedPassword)) {
-                 String token = jwtUtil.generateToken(existingUser.getEmail());
+            String hashedPassword = existingUser.getPassword();
+            if (passwordEncoder.matches(userDTO.getPassword(), hashedPassword)) {
+                String token = jwtUtil.generateToken(existingUser.getEmail());
 
-                 LoginResponseDTO response = new LoginResponseDTO();
-                 response.setToken(token);
-                 return Mono.just(response);
-             } else {
-                 return Mono.error(new EcommerceException(EcommerceError.INVALID_CREDENTIALS));
-             }
+                LoginResponseDTO response = new LoginResponseDTO();
+                response.setToken(token);
+                return Mono.just(response);
+            } else {
+                return Mono.error(new EcommerceException(EcommerceError.INVALID_CREDENTIALS));
+            }
         });
     }
+
     @Override
     public Mono<UserDetailsDTO> getUserDetails(String token) {
         String username = jwtUtil.extractUsername(token);

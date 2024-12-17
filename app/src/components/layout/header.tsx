@@ -4,6 +4,7 @@ import { Search, ShoppingCart, Heart, UserRound } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
+import AccountDropdown from './account-dropdown';
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -11,9 +12,6 @@ export function Navbar() {
   const { isAuthenticated, userDetails } = useSelector(
     (state: RootState) => state.userDetails
   );
-
-
-  console.log("is authenticated", isAuthenticated, "user details", userDetails);
 
   return (
     <nav className="bg-white border-b border-gray-300">
@@ -82,9 +80,9 @@ export function Navbar() {
           <Link to="/wishlist" className="text-gray-600 hover:text-gray-800">
             <Heart className="h-6 w-6" />
           </Link>
-          <div className="text-gray-600 hover:text-gray-800">
-            <UserRound className="h-6 w-6" />
-          </div>
+          {isAuthenticated && (
+            <AccountDropdown trigger={<UserRound className="h-6 w-6" />} />
+          )}
         </div>
       </div>
 
@@ -118,9 +116,9 @@ export function Navbar() {
               >
                 <Heart className="h-6 w-6" />
               </Link>
-              <Link to="" className="text-gray-600 hover:text-gray-800">
-                <UserRound className="h-6 w-6" />
-              </Link>
+              {isAuthenticated && (
+                <AccountDropdown trigger={<UserRound className="h-6 w-6" />} />
+              )}
             </div>
           </div>
         </div>

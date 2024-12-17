@@ -13,7 +13,7 @@ public class CookieUtil {
         ResponseCookie cookie = ResponseCookie.from(name, value)
                 .httpOnly(true)
                 .secure(false)
-                .sameSite("None")
+                .sameSite("Lax")
                 .path("/")
                 .maxAge(Duration.ofDays(days))
                 .build();
@@ -25,7 +25,7 @@ public class CookieUtil {
         ResponseCookie expiredCookie = ResponseCookie.from(cookieName, "")
                 .httpOnly(true)
                 .secure(false)
-                .sameSite("None")
+                .sameSite("Lax")
                 .path("/")
                 .maxAge(0)
                 .build();
