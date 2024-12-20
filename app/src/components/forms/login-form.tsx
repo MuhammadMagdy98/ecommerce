@@ -5,12 +5,11 @@ import { useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { api, ENDPOINTS } from '@/constants/Url';
 import GoogleButton from '../layout/google-button';
 import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '@/store';
+import { useDispatch } from 'react-redux';
 import { login } from '@/slices/user-slices';
+import UserApi from '@/lib/api/user-api';
 
 interface LoginForm {
   email: string;
@@ -29,18 +28,17 @@ function Login() {
 
   const navigate = useNavigate();
 
-  const { mutate: loginUser, isLoading } = useMutation({
+  const { mutate: loginUser, isPending } = useMutation({
     mutationFn: async (userData: LoginForm) => {
-      const response = await api.post(ENDPOINTS.AUTH.LOGIN, userData, {
-        withCredentials: true,
-      });
+      const response = await UserApi.login(userData);
       return response.data;
     },
     onSuccess: async (data) => {
       // Handle successful login
       console.log('Login successful:', data);
       setTimeout(async () => {
-        await fetchUserDetails();
+        const response = await UserApi.getUserDetails();
+        dispatch(login(response.data.data));
         navigate('/home'); // Navigate to the home page
       }, 500); // 500ms delay
     },
@@ -53,20 +51,6 @@ function Login() {
       console.error('Login error:', error);
     },
   });
-
-  const fetchUserDetails = async () => {
-    try {
-      const response = await api.get(ENDPOINTS.AUTH.ME, {
-        withCredentials: true, // Ensures cookies are sent with the request
-      });
-
-      // Store user details in Redux
-      dispatch(login(response.data));
-      console.log('User details fetched:', response.data);
-    } catch (error) {
-      console.error('Failed to fetch user details:', error);
-    }
-  };
   const onSubmit = (data: LoginForm) => {
     loginUser(data);
   };
@@ -143,9 +127,9 @@ function Login() {
               <Button
                 type="submit"
                 className="w-full primary"
-                disabled={isLoading}
+                disabled={isPending}
               >
-                {isLoading ? 'Signing in...' : 'Sign in'}
+                {isPending ? 'Signing in...' : 'Sign in'}
               </Button>
               <GoogleButton />
 

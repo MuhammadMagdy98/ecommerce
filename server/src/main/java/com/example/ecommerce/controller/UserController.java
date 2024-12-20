@@ -75,11 +75,8 @@ public class UserController {
 
     @GetMapping("/me")
     public Mono<ResponseDTO<UserDetailsDTO>> getAuthenticatedUser(ServerHttpResponse response,
-                                                                  @RequestHeader HttpHeaders headers,
-                                                                  ServerHttpRequest request,
                                                                   @CookieValue(name = "token", required = false) String token) {
-        log.info("Incoming request headers: {}", headers);
-        log.info("cookies are ", request.getCookies());
+
         if (token == null || token.isEmpty()) {
             log.warn("No token provided in cookies");
             return Mono.error(new EcommerceException(EcommerceError.UNAUTHORIZED));

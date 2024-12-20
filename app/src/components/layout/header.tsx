@@ -81,7 +81,10 @@ export function Navbar() {
             <Heart className="h-6 w-6" />
           </Link>
           {isAuthenticated && (
-            <AccountDropdown trigger={<UserRound className="h-6 w-6" />} />
+            <AccountDropdown
+              trigger={<UserRound className="h-6 w-6" />}
+              userDetails={userDetails}
+            />
           )}
         </div>
       </div>

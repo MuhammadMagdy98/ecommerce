@@ -1,12 +1,12 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import LandingImage from "../../assets/landing-image.png";
-import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
-import { Link } from "react-router-dom"; // Import Link and useNavigate
-import { api, ENDPOINTS } from "@/constants/Url";
-import GoogleButton from "../layout/google-button";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import LandingImage from '../../assets/landing-image.png';
+import { useForm } from 'react-hook-form';
+import { useMutation } from '@tanstack/react-query';
+import { useState } from 'react';
+import { Link } from 'react-router-dom'; // Import Link and useNavigate
+import UserApi from '@/lib/api/user-api';
+import GoogleButton from '../layout/google-button';
 
 interface RegisterForm {
   name: string;
@@ -14,7 +14,7 @@ interface RegisterForm {
   password: string;
 }
 function Register() {
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const {
     register,
@@ -22,23 +22,23 @@ function Register() {
     formState: { errors },
   } = useForm<RegisterForm>();
 
-  const { mutate: registerUser, isLoading } = useMutation({
-    mutationFn: async (userData) => {
-      const response = await api.post(ENDPOINTS.AUTH.LOGIN, userData);
+  const { mutate: registerUser, isPending } = useMutation({
+    mutationFn: async (userData: RegisterForm) => {
+      const response = await UserApi.register(userData);
       return response.data;
     },
     onSuccess: (data) => {
       // Handle successful registration
-      console.log("Registration successful:", data);
+      console.log('Registration successful:', data);
       // Redirect to login page
     },
     onError: (error) => {
       // Handle registration error
       setError(
         error.response?.data?.message ||
-          "Registration failed. Please try again."
+          'Registration failed. Please try again.'
       );
-      console.error("Registration error:", error);
+      console.error('Registration error:', error);
     },
   });
 
@@ -73,11 +73,11 @@ function Register() {
               <div>
                 <Input
                   placeholder="Name"
-                  {...register("name", {
-                    required: "Name is required",
+                  {...register('name', {
+                    required: 'Name is required',
                     minLength: {
                       value: 2,
-                      message: "Name must be at least 2 characters",
+                      message: 'Name must be at least 2 characters',
                     },
                   })}
                 />
@@ -92,11 +92,11 @@ function Register() {
                 <Input
                   placeholder="Email"
                   type="email"
-                  {...register("email", {
-                    required: "Email is required",
+                  {...register('email', {
+                    required: 'Email is required',
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "Invalid email address",
+                      message: 'Invalid email address',
                     },
                   })}
                 />
@@ -111,16 +111,16 @@ function Register() {
                 <Input
                   placeholder="Password"
                   type="password"
-                  {...register("password", {
-                    required: "Password is required",
+                  {...register('password', {
+                    required: 'Password is required',
                     minLength: {
                       value: 8,
-                      message: "Password must be at least 8 characters",
+                      message: 'Password must be at least 8 characters',
                     },
                     pattern: {
                       value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
                       message:
-                        "Password must contain at least one letter and one number",
+                        'Password must contain at least one letter and one number',
                     },
                   })}
                 />
@@ -135,15 +135,15 @@ function Register() {
               <Button
                 type="submit"
                 className="w-full primary"
-                disabled={isLoading}
+                disabled={isPending}
               >
-                {isLoading ? "Creating Account..." : "Create Account"}
+                {isPending ? 'Creating Account...' : 'Create Account'}
               </Button>
 
               <GoogleButton />
               {/* Already have an account */}
               <p className="text-center text-sm text-gray-600">
-                Already have an account?{" "}
+                Already have an account?{' '}
                 <Link to="/login" className="text-blue-600 hover:text-blue-800">
                   Sign in
                 </Link>

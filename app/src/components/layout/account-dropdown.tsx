@@ -4,65 +4,42 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { LogOut, Star, ShoppingBag, UserPen } from 'lucide-react';
+import { UserDetails } from '@/types/user';
 import { ReactNode } from 'react';
 
 interface AccountDropdownProps {
   trigger: ReactNode;
+  userDetails: UserDetails | null;
 }
-function AccountDropdown({ trigger }: AccountDropdownProps) {
+function AccountDropdown({ trigger, userDetails }: AccountDropdownProps) {
+  console.log('user details = ==== ', userDetails);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuLabel>{userDetails?.username}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
-            Profile <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+            {' '}
+            <UserPen />
+            Profile
           </DropdownMenuItem>
           <DropdownMenuItem>
-            Billing <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+            <ShoppingBag /> Orders{' '}
           </DropdownMenuItem>
           <DropdownMenuItem>
-            Settings <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            Keyboard shortcuts <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
+            <Star /> Reviews
           </DropdownMenuItem>
         </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>Team</DropdownMenuItem>
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>Invite users</DropdownMenuSubTrigger>
-            <DropdownMenuPortal>
-              <DropdownMenuSubContent>
-                <DropdownMenuItem>Email</DropdownMenuItem>
-                <DropdownMenuItem>Message</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>More...</DropdownMenuItem>
-              </DropdownMenuSubContent>
-            </DropdownMenuPortal>
-          </DropdownMenuSub>
-          <DropdownMenuItem>
-            New Team <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>GitHub</DropdownMenuItem>
-        <DropdownMenuItem>Support</DropdownMenuItem>
-        <DropdownMenuItem disabled>API</DropdownMenuItem>
-        <DropdownMenuSeparator />
+
         <DropdownMenuItem>
-          Log out <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+          <LogOut />
+          Log out
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
